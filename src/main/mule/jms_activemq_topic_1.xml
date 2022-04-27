@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<flow name="jms_activemq_topic_1Flow" doc:id="e097b505-e728-4415-9272-328bf95234a4" >
+		<http:listener doc:name="Listener" doc:id="5b76eaf9-9888-4ab4-aafd-7365519ecd4c" config-ref="HTTP_Listener_config" path="/jms-topic" />
+		<jms:publish doc:name="Publish" doc:id="ae64d85c-f07b-42b4-bb38-d5a8f17cab2c" config-ref="JMS_Config" destination="test_mq_topic" sendCorrelationId="ALWAYS" destinationType="TOPIC">
+			<jms:message outboundContentType="application/json" />
+		</jms:publish>
+	</flow>
+	<flow name="jms_activemq_topic_consumer_1" doc:id="ee4a32b5-f84b-4ef2-98a8-9bb4fe2b8c4c" >
+		<jms:listener doc:name="consumer1" doc:id="8a63c57e-d353-424b-a9a7-480e2a14107a" config-ref="JMS_Config" destination="test_mq_topic" inboundContentType="application/json" numberOfConsumers="1" >
+			<jms:consumer-type >
+				<jms:topic-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="0912670d-e6d6-4276-8b45-a6b8d0ce1db8" message="first log #[payload]" />
+	</flow>
+	<flow name="jms_activemq_topic_consumer_2" doc:id="a94caa1d-ee0e-4b4f-afab-1008b8c5d762" >
+		<jms:listener doc:name="consumer2" doc:id="eaba0d62-9f4b-4179-a972-0a2f8fbad48b" config-ref="JMS_Config" destination="test_mq_topic" inboundContentType="application/json" numberOfConsumers="1" >
+			<jms:consumer-type >
+				<jms:topic-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="24bd62ef-edcd-42d4-851c-394353b41174" message="second log #[payload]" />
+	</flow>
+</mule>

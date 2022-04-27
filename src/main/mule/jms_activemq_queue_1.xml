@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	
+	<flow name="jms_activemq_queue_1Flow" doc:id="6fdd027d-3697-4018-a03f-48cf4d4c22b7" >
+		<http:listener doc:name="Listener" doc:id="729ca3f4-ee9e-4c0c-b221-03bc72a96736" config-ref="HTTP_Listener_config" path="/jms-q"/>
+		<jms:publish doc:id="6c4fe9af-e396-4ee7-9bcd-771d2c82b675" config-ref="JMS_Config" destination="test_mq" sendCorrelationId="ALWAYS">
+			<jms:message outboundContentType="application/json" />
+		</jms:publish>
+	</flow>
+	<flow name="jms_activemq_queue_1Flow1" doc:id="a844e399-5b63-41ae-b4cd-057971cb83ea" >
+		<jms:listener doc:name="On New Message" doc:id="45d73b31-e846-42d4-b3fc-a8c36bd75acf" config-ref="JMS_Config" destination="test_mq" inboundContentType="application/json" numberOfConsumers="1">
+			<jms:consumer-type >
+				<jms:queue-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="dba0260a-9efd-44d2-861b-c5435d7534da" message="first log #[payload]"/>
+	</flow>
+	<flow name="Copy_of_jms_activemq_queue_1Flow" doc:id="f771c83b-2e2f-42ab-81bf-2964f6203385" >
+		<jms:listener doc:name="Copy_of_On New Message" doc:id="181c2733-022e-4831-b963-8b92e13dc565" config-ref="JMS_Config" destination="test_mq" inboundContentType="application/json" numberOfConsumers="1" >
+			<jms:consumer-type >
+				<jms:queue-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<logger level="INFO" doc:name="Copy_of_Logger" doc:id="020bfcea-4e13-444d-b7c6-b1a96d094e70" message="second log #[payload]" />
+	</flow>
+</mule>
